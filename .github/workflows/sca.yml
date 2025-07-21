@@ -29,8 +29,9 @@ jobs:
       - name: Install SCA tool (pip-audit)
         run: pip install pip-audit
 
-      - name: Run pip-audit scan
-        run: pip-audit --output-format json > audit-report.json
+      - name: Run pip-audit
+        run: pip-audit -f json > audit-report.json
+
 
       - name: Print JSON analysis report
         run: cat audit-report.json
