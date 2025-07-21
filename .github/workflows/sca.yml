@@ -1,18 +1,22 @@
-name: CRDA Dependency Scan
+name: SCA - pip-audit Dependency Scan
 
 on:
+  push:
+    branches:
+      - master
+  pull_request:
   workflow_dispatch:
 
 jobs:
   sca:
-    name: SCA (CRDA) Scan
+    name: Static Composition Analysis (pip-audit)
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -20,21 +24,19 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requerimientos.txt
+          pip install -r requirements.txt
 
-      - name: Install SCA tool (CRDA)
-        uses: redhat-actions/crda@v1.2
-        id: crda_scan
-        with:
-          manifest_file: requerimientos.txt
-          snyk_token: ${{ secrets.CUR_SNYK_KEY }}
-          fail_on: never
+      - name: Install SCA tool (pip-audit)
+        run: pip install pip-audit
+
+      - name: Run pip-audit scan
+        run: pip-audit --output-format json > audit-report.json
 
       - name: Print JSON analysis report
-        run: cat ${{ steps.crda_scan.outputs.crda_report_json }}
+        run: cat audit-report.json
 
-      - name: Print SARIF analysis report
-        run: cat ${{ steps.crda_scan.outputs.crda_report_sarif }}
-
-      - name: Print report link
-        run: echo ${{ steps.crda_scan.outputs.report_link }}
+      - name: Upload pip-audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report
+          path: audit-report.json
