@@ -20,13 +20,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requerimientos.txt
 
       - name: Install SCA tool (CRDA)
         uses: redhat-actions/crda@v1.2
         id: crda_scan
         with:
-          manifest_file: requirements.txt
+          manifest_file: requerimientos.txt
           snyk_token: ${{ secrets.CUR_SNYK_KEY }}
           fail_on: never
 
