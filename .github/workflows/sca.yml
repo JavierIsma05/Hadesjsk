@@ -25,7 +25,7 @@ jobs:
           pip install pip-audit
 
       - name: Audit dependencies
-        run: pip-audit --output-format json > audit-report.json
+        run: pip-audit -r requirements.txt -f json -o audit-report.json
 
       - name: Upload Audit Report
         uses: actions/upload-artifact@v4
