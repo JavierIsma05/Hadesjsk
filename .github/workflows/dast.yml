@@ -37,7 +37,6 @@ jobs:
         uses: zaproxy/action-baseline@v0.12.0
         with:
           target: 'http://localhost:8000'
-          format: 'json'
           fail_action: false
 
       - name: Upload ZAP Report
